@@ -1,0 +1,44 @@
+General AWS Notes
+
+EC2
+
+1. Never enter your access keys in en2 instance. Anyone can access them. Use IAM role (or whatever service to access)  for the EC2 to interact with that service
+2. Private IP of ec2 instance doesn’t change upon reboot, only public IP changes. 
+    1. Not a good practice to use Elastic IPs to solve this problem
+    2. Best practice is to use ELB
+
+ENI
+
+1. For failover of 2 or more EC2 instances having same application running, my custom created ENI can be attached be on the fly between different EC2 through the private IP address. 
+2. ENI allocated by AWS when launching EC2 instances gets deleted automatically when the instances are terminated 
+
+1. EC2 Hibernate: save the ram state on the “encrypted” EBS volume (the one which is attached to EC2 instance ) (only, not Instance store). RAM size should be less than 150 gb. In hibernation, the OS doesn’t gets stopped unlike stopping the instance. 
+2. EBS volumes can be made encrypted when launching the EC2 instance. Also, can enable hibernation
+
+AMI
+
+1. Can also be created from an ec2 instance having installed different softwares and different configuration files and then we can create an ec2 instance from the image. 
+
+General
+
+1. IO1/2 can attach upto 16 ec2 instances in the SAME AZ. EFS is used for multiple AZ (in a region) attach of EC2
+2. Bursting means to automatically scale the performance as storage scales. 
+3. For HA, have more than 1 AZ deployment and use ASG and ELB
+
+ELB
+	
+1. Best for microservices and container apps. For EC2 ( must with ASG ), ECS (manages itself) , private IPs only (because public IPs can change on instance restarts, maybe), lambda functions also 
+2. Health checks are at target level only
+3. Having LB for multi AZ is only beneficial when the underlying resources are present in multiAZ
+4. Cross zone load balancing ( even distribution of load across underlying resources ) is by default ON in ALB and off in NLB, GLB. 
+5. SSL/TLS certificates are used to encrypt the data in transit from the client to the load balancer using HTTPs which can be sent from the load balancer to underlying resources in HTTP because of AWS private network. 
+6. SNI (server name indication) solves the problem of managing many digital certificates for 1 web server to digitally encrypt the traffic. It is provided by default for the ALB and NLB.
+7. Secure data in transit can be made on by adding listener for HTTPs at 443 for ALB and TLS for 443 for NLB and then we can forward  the traffic to target group and having certificate from ACM or IAM. 
+
+ASG
+
+1. ASG goes into cool-down of around 300 seconds by default after terminating or initiating an instance. 
+2. It’s better to use ready-to-use AMI for the launch of the new instances. 
+3. For better performance, use ASG with ELB
+
+

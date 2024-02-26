@@ -1,0 +1,6 @@
+General Backend Notes
+
+1. Put a reverse proxy (like nginx) in front of application server (like Gurnicorn, a WSGI server) to handle slow connections and connections involving large IO. Reverse proxy is asynchronous in nature and uses highly concurrent non-blocking forking model. 
+2. Nginx faces the outside world, handling http request, but cannot directly communicate with python code. For this, you need a wsgi protocol to handle the application processing for the request. Hence, nginx sends the request to socket which then sends the request to gunicorn for processing and vice-versa.
+3. 
+
