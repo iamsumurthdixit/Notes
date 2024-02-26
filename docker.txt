@@ -1,0 +1,130 @@
+Docker notes:
+
+
+1. To start docker: docker run image_name 
+2. To view active containers : docker ps 
+3. To view inactive container: docker ps -a
+4. To ssh into docker container through macOS shell: 
+    1. Copy the container_id by : docker ps
+    2. Enter command: docker exec -it <container_id> bash 
+    3. To stop the shell: docker stop <container_id>
+    4. To start container by container id: docker start <container_id>
+5. To remove a container : docker rm <container_id> 
+6. To remove an image: docker rmi <image_name>
+7. To inspect the container: docker inspect <container_id>
+8. To view logs: docker logs <container_id>
+9. To delete all the stopped containers without any confirmation message: docker container prune -f
+10. To logs upto certain time limit : docker logs —since 5s <container_id> 
+11. To return to the terminal after starting a container instantly ( detached mode) use -d flag
+12. For this command : ( forwarding the requests to a port  inside container ): docker run -d -p 8080:80 nginx
+13.  The above command is like a tunnel that forwards all the traffic from localhost port 8080 to the container’s port 80 (at which nginx is running ( default port of nginx )) 
+14. Docker containers are shared using images. 
+15. To share a particular docker image, use commit messages. 
+16. To create an image from another image in docker: docker commit -m “message” <container_id> <image_name>
+17. Now check if it exists: docker images 
+18. To get the list of the all active, inactive image ids in docker: docker images -q
+19. To remove all the inactive docker images: docker rmi $(docker images -q) -f
+20. Images in docker : because docker images share many files 
+21. To build an image from a “ Dockerfile “ : 
+    1. Locate the Dockerfile in a directory  where only relevant files are present 
+    2. Use command: docker build -t <image_name> .
+    3. Run the container from the image 
+
+Docker Compose: 
+
+1. To start the application: docker compose up -d 
+2. To watch real-time changes : docker compose watch 
+3. To persist the data after deleting the container: use volumes on local machine : 
+    1. Volumes in docker are external locations outside the container filesystem on local machine which can persist the data. Whenever the container is started again after deletion, the container can connect to the volume to persist the data
+    2. This bind instruction is provided by the RUN instruction in Dockerfile
+    3. It can also be used for both persistence the data among various containers and share data between containers 
+4. By default docker containers can’t access any data outside the consenters, I.e., can’t access local folder on the machine. 
+    1. To access data on your system from container:  use bind mount using compose 
+        * volumes: 
+        *      - ./app:/usr/src/app
+        *      - /usr/src/app/node_modules
+    2. Here, /app folder in the local file system is (mounted) mirrored ( set up bidirectional link with the container’s file system ) with the /usr/src/app folder in the container file system, 
+    3. /usr/src/app/node_moudules is a named mount that prevents the overwriting of the container’s node_modules to preserve the packages inside the container 
+    4. Any changes made inside the /app in local machine are reflected in the containers specified folder and vice-versa in real-time 
+    5. NEED to do this: faster development ( container becomes development container ), eliminates the need to rebuild the container when updating the code, otherwise, any code changes do NOT reflect in the container 
+5. To containerize your application : docker init 
+    1. It sets up Dockerfile that defines how to build the image and compose.yaml that states how to run the container 
+6. To publish image to the docker hub: better to use docker desktop guide
+
+General Docker notes: 
+
+1. There are 2 types of mounts in docker -> volume and bind 
+2. Docker uses Dockerfile to build a new image. 
+3. . (Dot) in the end of the build command instructs docker to look for Dockerfile in the current directory
+4. Port mapping is MUST to access the container’s application from the host. The mapping is -> host_port : container_port. This is done to expose the container_port to the host_port. 
+5. To share the application: use docker hub
+6. To PUSH an image to docker hub: 
+    1. Tag the image with your username : 
+        1. Command: docker tag <image_name> <useranme>/<image_name>
+        2. eg: docker tag getting-started sumurthconsultadd/getting-started
+    2. Push the image to hub: docker push <username>/<image_name>
+7. If 2 containers use same image, no container can see any other containers data or execution 
+8. Each container uses “layers” from the image to build the filesystem. Also, each container gets its own “scratch space” to create/update/remove files. 
+9. Any changes made to the container in case of files/directories are lost when the container is removed. To persist the changes made to the container-> use volumes.
+    1. Volumes: provide the ability to the connect specific filesystem paths to the host machine. Now all the changes are in sync. 
+    2. If the container is made to mount the directory of the host machine across container restarts, you’d see the same files.
+    3. Now, all the data is persisted to the directory of the host machine and can be made available to other containers as well when some other container can pick up where the last container stopped writing. 
+    4. eg: -> in case of databases 
+    5. To create a volume: 
+        1. first remove the container which is running without the persisted volume
+        2. Create the volume : docker volume create <volume-name> 
+            1. eg: docker volume create todo-db
+        3. Start the container with the mount option: always start with same below command to attach the volume, be-careful for the spaces in the below command 
+            1. Cmd => docker run -dp 3000:3000 —mount type=volume,src=todo-db,target=/etc/todos getting-started
+            2. Target in above is location in container 
+        4. To know the location on host machine where data is persisted -> “Mountpoint” in docker volume inspect <volume-name>
+10. To create and work with bind mount: mount that lets access to local system’s filesystem from the container and run processes in the container for the modified file data in the local filesystem. 
+11. Working with bind mounts: 
+    1. Create a bind mount : 
+        1. Cmd => docker run -it --mount type=bind,src=“$(pwd)”,target=/src ubuntu bash
+        2. Here, src = working directory in the local filesystem -> here /getting-started and target is the location in the docker container 
+        3. Now we have a running instance of ubuntu in the form of ubuntu shell
+    2. Checkout how to set up the development container from the docker getting started docs 
+12. NOTE: using bind mount does NOT re-build the image due to code change in the host directory. After the development is done in the dev container, use docker build -t <image-name> . to build a new image for the prod.
+13. Container Networking: 
+    1. To host different services like frontend, backend and db in different containers in order to have scalability in isolation, version updation in isolation 
+    2. Since containers don’t know about any process / container running on the same host machine, there are 2 ways to let containers communicate using container networking over same network : 
+        1. Assign the network when starting the container 
+        2. Connect a running container to network
+    3. docker run -d \  --network todo-app --network-alias mysql \    -v todo-mysql-data:/var/lib/mysql \    -e MYSQL_ROOT_PASSWORD=secret \    -e MYSQL_DATABASE=todos \    mysql:8.0
+            1. The above command starts a new container with a mysql image, attaches this container with the todo-app named network using —netowork flag, creates a volume mount for data persistence of the db such that data persists without depending on container’s lifecycle. 
+            2. It also sets the alias of the network name to ‘mysql’ using —network-alias flag so that it can be located on the network using the dig mysql command from any other container / shell connected to same network
+            3. 3 environment variables are set using -e flags so that they will be executed when the container is started 
+        1. To confirm that mysql is started, cmd = docker exec -it <mysql-cont-id> mysql -u root -p
+            1. The above command tells docker to execute a command (docker exec) in a running container (by specifying the container id) using -i(interactive) -t(terminal) for the container-id and when the container starts, provides the command mysql -u root -p, which means start mysql instance using -u(username) root and prompt for -p(password)
+        2. Start the new container using the image nicolaka/netshoot ( here, that contains the information to connect using network) and attach the todo-app network to it using —network flag : docker run -it —network todo-app nicolaka/netshoot
+            1. To check if the mysql named network alias for mysql image container is present on the same network, use dig mysql 
+            2. This was done only for learning purpose. This is not part of the process being done here. 
+    4. To start with the development container: running application using multiple containers: 
+        1. Get inside the getting-started directory in the terminal where the app is present. 
+        2. Run cmd: docker run -dp 127.0.0.1:3000:3000 \ -w /app -v "$(pwd):/app" \  --network todo-app \  -e MYSQL_HOST=mysql \  -e MYSQL_USER=root \  -e MYSQL_PASSWORD=secret \  -e MYSQL_DB=todos \  node:18-alpine \  sh -c "yarn install && yarn run dev"
+            1. The above command starts a new container in detached mode by port mapping of localhost 3000 with container’s 3000 port, sets the working directory inside the container to /app, volume mounts the current host directory to /app inside container for data persistence, attaches the network todo-app for container communication. Then sets up the environment variables inside the container, by using the image node:18-alpine to run node application and then inside the container starts the shell using sh and then runs the command “yarn..dev”
+            2. When the container gets started, it gets connected to mysql at port 3306
+        3. To see the contents of the mysql database: docker exec -it <mysql-cont-id> mysql -p todos 
+            1. The above command connects to the mysql database and prompts (-p) for the password and display the items being written to todos. Password here is secret
+14. Docker Compose: for multi-container applications, create compose.yaml file at the root level of the working directory in the host to list the services ( containers ). 
+    1. BIG Advantages:
+        1.  No need to explicitly create a network for containers to communicate when using compose. Docker compose automatically creates a network for container stack 
+        2. No need to specify the network-alias for any service, the name of the service automatically serves as the network-alias. 
+        3. Also, docker itself creates a named volume for the data persistence
+    2. For each container starting command in the above step (14), migrate the info to compose.yaml 
+    3. Start the application stack using : docker compose up -d ( for detached mode )
+    4. To tear down the entire stack :
+        1. cmd: docker compose down 
+            1. The above cmd is default that removes the containers and removes the application network, but does NOT remove the named volume 
+        2. cmd: docker compose down —volumes: 
+            1. Same as above, also removes all the named volumes created by docker for the applcation stack 
+        3. Using docker desktop delete button: same 14.4.1
+15. Named volumes ( are simple volumes created using docker volume create <name> )are used for data persistence. Named volumes ( or just volumes ) are present in the host ( local, nfs, cloud ) storage and cannot be directly accessed without using the docker commands. They are more secure, more scalable and when attached to a container, persist data across container restarts irrespective of the lifecycle  of the container. 
+16. Bind mounts are the direct mapping of the local directory to the container filesystem. It is a good choice when using the development mode of the app. It can also persist data but if the host filesystem gets deleted, it is lost. It is not much secure.
+17. Using same volume(named[created] or mounted[direct mapping]) for multiple container writes simultaneously is NOT good due to race conditions. 
+18. Image building and Caching: 
+    1. Docker uses layers to build the image. Whenever a particular layer is modified, all the subsequent layers are rebuilt. So put the least-likely to be modified layers at the top of the Dockerfile and then subsequently write the layers in the order of increasing frequency of change. Docker caches each layer after it is built. In this way, build times of the image become much faster
+    2. Use multi-stage builds for the building images that often have so many components like JDK, node_modules, maven etc. that do not need to be shipped to production. 
+19. Use “secrets” and “configs” to keep sensitive data like env variables in production instead of using env variables. 
+
