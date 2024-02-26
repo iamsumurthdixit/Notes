@@ -1,0 +1,37 @@
+1. sorting a vector of pair is much faster than sorting a vector of vector (in kruskal)
+2. https://www.geeksforgeeks.org/find-n-th-number-whose-binary-representation-palindrome/
+3. i'th element with 0 based indexing occurs in (i + 1)(N - i) subarrays from total number of subarrays.
+4. l,r=>2pointers to different indexes, adding a new element to range [l,r-1] by X[r] increases number of subarrys by (r-l+1)
+5. for monotonic stack, refer lc 739 solution
+6. stars and bars algorithm
+7. when graph is a tree, previous index will suffice in dfs, no need of visisted array
+8. to use DSU in 2D, using rows and cols, use (i) for rows, and (~i) for cols to differentiate between rows and cols. eg : lc 947, {works only if i >= 0}. another way is to use i∈[R,C] for rows and i+k for cols where k∉[R,C]. 
+9. ALTERNATE to point 8: use normal DSU on grids using index of edges as ID's(components)
+10. total number of distinct pairs from N connected components with Xi sizes can be found in O(N) through (ans+=∑*x;∑+=x)
+11. scanline algorithms can also be solved using binary search on sorted start and end times using cnt of start - cnt of end , eg: (lc 2251)
+12. whenever there is an equation is to be satisfied, modify the equation mathematically and then solve for it. eg: j-i!=a[j]-a[i] => a[i]-i != a[j]-j 
+13. to check A is a power of B, let's assume, A is of 4 bytes, hence maxVal(A) <= INT_MAX.this implies, maximum power of B <= INT_MAX will be B to the power floor of log base B of INT_MAX.i.e. let this be X. so X % A should be 0. NOTE: B should be prime. 
+14. if you need to maximize something in a circular array, minimize the opposite in the original array and calculate the required using sum/product etc. vice-versa
+15. 1-based indexing, for L,R to be middle elements,[L=(N+1)/2, R=(N+2)/2]. if N=5,L=R=3,if N=6,L=3,R=4
+16. sum of 1,2,...,N is always divisible by N if N is odd
+17. pigeonhole principle to prove the solutions. consider xor of 2^20 paths of a tree. if the number of pigeons (paths) exceeds the number of holes (XOR values), then two pigeons must share a hole (two paths must share a XOR value)
+18. for xor of every pair of edges on a tree, fix one vertex as root(say 1), compute xor to every weighted edged vertex using dfs/bfs, store it in prefixXor[]. for xor(u, v)=prefixXor[u]^prefixXor[v]. xor of edges from 1 to u and 1 to v will cancel out in the common path
+19. to fix the position of an element in an array such that it should at a place where it needs to be, use quick select method. eg: to fix the median element of array, it should be at the middle element of the array, use inbuilt quick select method. This works in O(N). 
+it is given as: nth_element(a.begin(), a.begin() + n/2, a.end()); // fixes the median to be at a[n/2]. 
+20. sometimes, the 2 pointer questions can be solved using unordered/ordered map. eg: lc 1679
+21. for k smallest, use maxheap. do heap.pop() when size > k. vice-versa (not sure, check maybe)
+22. the basic difference b/w bfs and dijkstra for finding the shortest path is .. bfs "considers" only 1 path among many paths on the basis of the minimum number of nodes in that path ... dijsktra considers many paths and updates the cost to vertices in case of better paths. hence, the notion of "weight" changes the ideology of using bfs and using dijkstra 
+23. if output string can be printed while processing itself, avoid using another string as ans to fill it and printing ans. instead, print the characters in processing itself. 
+24. use map<int,int> for sweep line if needed. the .second will correspond to +1 or -1. 
+25. a + b = a | b, iff a and b have different bits set. similarly, a + b + c = a | b | c for same reason
+in general, a | b  <= a + b
+26. use RELATIVE COORDINATE method depending upon need. for eg: G-16 striver graph series. 
+27. single source shortest path in "UN-WEIGHTED" graph can be solved by using dfs without visited array
+28. use #define int long .... function body .... #define int int OR #undef int before return statement
+29. SCC are ONLY valid in 'directed' graphs. 
+30. use 2 calls (mid, then with mid+1) on the worker fucntion in binary search to check the direction of convergence
+31. use counting sort whenever there are only very few characters to be sorted and worked out. eg : lc 2785
+32. if an array has a bitwise and = 'm', then any subarray CANNOT have bitwise and less than 'm'
+33. consider using prefix and suffix by maintaining counts in 2d/3d arrays. lc 2484
+34. in array of size n element at ind(i) after k shift(left/right) is at (i+k)%n
+35. for questions like find min/max for atmost k objects, look for heap rather than dp. Eg:IPO

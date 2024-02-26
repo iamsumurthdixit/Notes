@@ -1,0 +1,1128 @@
+				1. FUNDAMENTALS
+
+
+- write 'use strict' on top if js file is not a class or module and will be run in browser
+- external js file is used in script tag in html so that this js file will be downloaded by browser once and will be stroed in cache. and in this case, do not write js inside the script tag in html 
+- use single line to declare single variable eg,
+let name = 'myname'; 
+let age = 23; 
+- always use semi-colons at the end of a statement 
+- when value of a constant variable is known prior to execution of the program, declare the variable in capital letters. usually at the top. eg: 
+const BIRTHDAY = '17.05.2001'; 
+- in js, null means nothing/empty/ value unknown
+- undefined means value is not assigned to the varaible
+- 8 primitive data types: number, bigint, string, boolean, null, undefined, symbol
+- 1 non-primitive data type: object
+- typeof(x)/typeof x : operator to show the type
+- 3 types of interactions: alert, prompt, confirm 
+- 3 types of conversion: Number(value), String(value), Boolean(value)
+
+-------------------------------------------------------------------------
+examples:
+"" + 1 + 0 = "10" // (1)
+"" - 1 + 0 = -1 // (2)
+true + false = 1
+6 / "3" = 2
+"2" * "3" = 6
+4 + 5 + "px" = "9px"
+"$" + 4 + 5 = "$45"
+"4" - 2 = 2
+"4px" - 2 = NaN
+"  -9  " + 5 = "  -9  5" // (3)
+"  -9  " - 5 = -14 // (4)
+null + 1 = 1 // (5)
+undefined + 1 = NaN // (6)
+" \t \n" - 2 = -2 // (7)
+
+1.The addition with a string "" + 1 converts 1 to a string: "" + 1 = "1", and then we have "1" + 0, the same rule is applied.
+2.The subtraction - (like most math operations) only works with numbers, it converts an empty string "" to 0.
+3.The addition with a string appends the number 5 to the string.
+4.The subtraction always converts to numbers, so it makes " -9 " a number -9 (ignoring spaces around it).
+5.null becomes 0 after the numeric conversion.
+6.undefined becomes NaN after the numeric conversion.
+7.Space characters are trimmed off string start and end when a string is converted to a number. Here the whole string consists of space characters, such as \t, \n and a “regular” space between them. So, similarly to an empty string, it becomes 0.
+-----------------------------------------------------------------------
+- if a valid number is written as a string, then it can be converted to number using 2 ways: 
+eg: let myNum = "23"; or myNum = "    23 "; 
+let newNum = Number(myNum); OR
+let newNum = +myNum; OR newNum = +"23"; 
+typeof(newNum) = number
+
+- string comparision is done using lexicographical order. 
+- alert('3' > 1) => true // '3' is converted to 3
+- alert( 1 && 2 && null && 3 ); // null
+- alert( 1 && 2 && 3 ); // 3, the last one
+let firstName = "";
+let lastName = "";
+let nickName = "SuperCoder";
+
+// shows the first "truthy" value
+alert( firstName || lastName || nickName || "Anonymous"); // SuperCoder
+
+- ?? (nullish coalescing) operator: a ?? b -> result is a if a is not null/undefined otherwise b. 
+// shows the first "defined" value:
+alert(firstName ?? lastName ?? nickName ?? "Anonymous"); // Supercoder
+
+let num = 0; 
+alert(num || 100); // 100
+alert(num ?? 100); // 0
+- ?? gives a shorthand to find the first defined value 
+// set val to 100 is val is not defined : 
+val = val ?? 100; 
+--------------------------------------------------------------------------
+
+FUNCTIONS: 
+
+function name(parameter1, parameter2, ... parameterN) {
+ // body
+}
+
+- LOCAL VARIABLES: declares inside the fn, visible only inside fn; 
+function showMessage() {
+	let message = 'hello !'; // local variable
+	alert(message); 
+}
+alert(message); // compile error
+
+- OUTER VARIABLE: declared outside, any function can modify them. 
+let userName = 'John';
+function getName() {
+	userName = 'Bob'; 
+	alert(userName); 
+}
+alert(userName); // John
+getName(); 
+alert(userName); // Bob
+
+- VARIABLE SHADOWING: declaring a local variable inside a fucntion with the same name as some other outer variable. now the fucntion can NOT access the outer variable with this name. 
+
+let userName = 'John';
+function getName() {
+	let userName = 'Bob'; // re declration
+	alert(userName); 
+}
+alert(userName); // John
+getName(); 
+alert(userName); // John
+
+- PARAMETERS: functions gets the COPY of the values as arguments. any change to the these is not reflected to the original variables outside the fucntion
+- DEFAULT VALUES: fucntions parameters can also have default values as values or call to a different function when this parameter is not provided in the fucntion call 
+function showMessage(from, text = 'no text given') {
+	alert(from + text); 
+}
+let from = 'Ann'; 
+showMessage(from); OR 
+showMessage(from, undefined); 
+
+OR
+function getDefaultText() {
+	return 'no text given'; 
+}
+function showMessage(from, text = getDefaultText()) {
+	alert(from + text); 
+}
+
+- a fucntion that does not return anything returns undefined. 
+function doNothing() {
+	return; 
+	// or just empty fucntion also
+}
+alert(doNothing() === undefined); // true 
+
+- NEVER ADD A NEWLINE between return and an expression: js assumes newline to be a semicolon so, it will assume return; hence use paranthesis, 
+return 
+	(some long expression); // WRONG 
+return (
+	some long expression
+);  // CORRECT
+----------------------------------------------------------------------
+NOTE: IN JAVASCRIPT, a function is treated as a special kind of VALUE. hence, the above method of writing functions is called as fucntion declaration. there is another method of writing fucntion, called function expression: 
+
+FUNCTION EXPRESSION: allows to create a fucntion in the middle of any expression
+
+function sayHi() {
+	alert('Hello'); 
+}
+let sayHi = function() {
+	alert('Hello'); 
+}; // semi-colon at the end. similar to reason of let x = 23; 
+
+in both cases, function is present in the memory whose varible name is sayHi. 
+
+- functions in js can be copied to varaibles, just like variables. 
+eg: let anotherSayHi = sayHi; 
+sayHi(); 		// Hello
+anotherSayHi(); // Hello
+
+- CALLBACKS: passing fucntions as values and using them in fucntion expressions. 
+
+function ask(question, yes, no) {
+  if (confirm(question)) yes()
+  else no();
+}
+function showOk() {
+  alert( "You agreed." );
+}
+function showCancel() {
+  alert( "You canceled the execution." );
+}
+// usage: functions showOk, showCancel are passed as arguments to ask
+ask("Do you agree?", showOk, showCancel);
+
+here: showOk and showCancel are called "callback fucntions" or "callbacks". Idea is to pass a fucntion as argument and 'expect' it to be called back later. showOk becomes the callback for 'yes' answer, showCancel becomes the callback for 'no' answer. in other words, yes is mapped to showOk and no is mapped to showCancel. 
+
+- DIFFERENCES B/W function declaration and expression: 
+- function expression is created only after the execution reaches assignment let sum = function() {}; so calling sum before this line will be error. 
+
+- fucntion declaration are global and can be called before they are defined. eg: 
+sayHi('John'); 
+function sayHi(name) {
+	alert(`hello ${name}`); 
+} // works fine
+
+sayHi('John'); 
+let sayHi = function(name) {
+	alert(`hello ${name}`);
+}; // error
+
+- a fucntion declaration is block scoped. only visible inside the block. eg: 
+let age = 16; 
+if (age < 18) {
+  function welcome() {
+    alert("Hello!");
+  }
+} else {
+  function welcome() {
+    alert("Greetings!");
+  }
+}
+welcome(); // Error: welcome is not defined
+
+SOLUTION: 
+let welcome; // use the expression method 
+let age = 16; 
+if (age < 18) {
+  welcome = function() {
+    alert("Hello!");
+  };
+} else {
+  welcome = function() {
+    alert("Greetings!");
+  };
+}
+welcome(); // "Hello!" 
+
+- shorthand for doing above process: 
+let age = 16; 
+let welcome = (age < 18) ? 
+	function() { alert("Hello!"); } : 
+	fucntion() { alert("Greetings!"); }; 
+welcome(); // Hello!
+--------------------------------------------------------------------------
+
+ARROW FUNCTIONS: function expressions can be converted to arrow functions
+
+// single line 
+let func = (arg1, arg2, ..., argN) => expression; 
+// multi line
+let func = (arg1, arg2, ..., argN) => {
+	let result; 
+	return result; 
+	// must write return statement here
+}; 
+let func = () => expression; 
+let func = arg1 => expression; 
+
+eg: 
+let sum = (a, b) => a + b; 
+let mulBy2 = a => a * 2; 
+
+let sum = (a, b) => {
+	return a + b; 
+}; 
+
+alert(sum(1, 2)); // 3
+
+function ask(question, yes, no) {
+	if(confirm(question)) yes(); 
+	else no(); 
+}
+
+ask(
+	"Do you agree? ", 
+	function() { alert('yes'); }, 
+	function() { alert('no'); }
+); 
+
+converted to arrow fucntions: 
+
+ask(
+	"Do you agree? ", 
+	() => alert('yes'), 
+	() => alert('no')
+); 
+--------------------------------------------------------------------------------------
+
+				2. CODE QUALITY 
+
+- sources panel. 
+- console, breakpoint(where debugger automatcially pauses execution)
+- refresh page after setting breakpoints for the 1st time
+- conditional breakpoints
+- 3 things to notice in soucres panel: 
+- Watch: shows the current value of any expressions 
+- Call Stack: shows the nested calls chain
+- Scope: current variables: local, global, this
+- breakpoint is formed by: clicking line number or writing debugger; 
+
+- "Tracing" the execution: 
+- Resume (F8): executes till next breakpoint, if none, then till end of page
+- Step (F9): run the next statement in the script
+- Step over (F10): similar to step, behaves differently when next statement is a fucntion call. unlike Step, which stops execution at the first line of the nested fucntion call, Step over skips all the statements of that fucntion call and stand at the last statement of that fucntion
+- Step into (F11): similar to Step, Step ignores the async actions. Step into goes inside their code and waits for them
+- Step out (Shift + F11): conitnue execution and stand at the last line of the current fucntion. handy when we are not interested in the current fucntion
+- enable/disable all breakpoints
+- enable/disable automatic pause in case of error
+-----------------------------
+- for readability: 
+- use backticks incase of lengthy strings. 
+- use semicolons even if no needed
+- use line spaces to separate logical statements 
+- when using multiple helper fucntions. use the function definition method. and write the needed code first and in the end write all the fucntion definitions 
+- write fucntions in such a way, that function itself works as a comment
+- write comments to show the birds eye view of the code. (high level usage, fucntion usage)
+eg: 
+/**
+ * Returns x raised to the n-th power.
+ *
+ * @param {number} x The number to raise.
+ * @param {number} n The power, must be a natural number.
+ * @return {number} x raised to the n-th power.
+ */
+function pow(x, n) {
+  ...
+}
+- DO NOT write comments "how" your code works and "what" it does
+- read the Ninja Code page for better understanding
+- read automated testing using Mocha and Chai
+- transpiler: software that translates source code to another source code
+---------------------------------------------------------------------------------
+
+				3. OBJECTS
+
+empty obejct in 2 ways: 
+let user = new Object(); // object constructor
+let user = {}; // object literal 
+
+let user = {
+	name: "John", 
+	age: 30 OR
+	age: 30, // writing comma in last property is allowed 
+}; 
+
+user.isAdmin = true; // adding new property here
+// when adding property outside, use =, when inside, use : 
+to delete a property: 
+delete user.age; 
+
+- when using multiword property, 'quote' it when using as key,i.e.,
+let user = {
+	name: "John", 
+	age: 30, 
+	"likes birds": true // mutiword property
+}; 
+- multiword property can't be accessed with dot(.) operator. 
+- to access it, use []
+alert(user["likes birds"]); 
+delete(user["likes birds"]); 
+
+another way: 
+let key = "likes birds"; 
+again, can NOT use . operator. 
+alert(user[key]); 
+delete(user[key]); 
+
+- COMPUTED PROPERTIES (dynamic properties)
+let fruit = prompt("which food to buy", "apple"); 
+let bag = {
+	[fruit]: 5 // whatever the value of fruit is, it will become the key
+}; 
+if entered fruit is apple, then 
+alert(bag.apple); // 5
+or alert(bag[apple]); // 5
+
+let fruit = 'apple'; 
+let bag = {
+	[fruit + 'Computers']: 5
+}
+alert(bag.appleComputers); // 5
+
+- PROPERTY VALUE SHORTHAND:
+
+function makeUser(name, age) {
+	// returning an object
+	return {
+		name: name, 
+		age: age
+	}; 
+}
+let user = makeUser('lmao', 30); 
+-instead of this, we can write, 
+function makeUser(name, age) {
+	return {
+		name, 
+		age
+	}; 
+}
+
+- to check the existence of a property in the object, use 'in' operator: 
+syntax: "key" in object 
+let user = {
+	name: "hon", 
+	age: 40
+}; 
+
+alert("age" in user); // true
+alert("name" in user); // ture
+OR
+let key = "name"; 
+alert(key in user); // true
+
+- TO ITERATE over all the key-value pairs of the object: 
+use for...in loop: 
+syntax: for(key in object) {...}
+
+let user = {
+	name: "john", 
+	age: 30, 
+	isAdmin: true
+}; 
+
+for(let key in user) {
+	alert(key); 
+	alert(user[key]); 
+}
+
+eg: write the fucntion multiplyNumeric(object) to multiply all the numeric values of the keys by 2: 
+
+// before: 
+let user= {
+	wid: 300,
+	high: 200, 
+	name: "yesno"
+}
+multiplyNumeric(user); 
+// after: 
+let user= {
+	wid: 600,
+	high: 400, 
+	name: "yesno"
+}
+// solution
+function multiplyNumber(obj) {
+	for(let key in obj) {
+		if(typeof(key) == 'number') {
+			obj[key] *= 2; 
+		}
+	}
+}
+-----------------------------------------------------
+OBJECT REFERENCING AND COPYING
+- objects contain the reference to the primitives. hence, if we do, 
+let obj = { name: "John" }; 
+let clone = obj; 
+clone.name = 'pete'; 
+alert(obj.name); // pete, bcoz, clone & obj are pointers to the same data
+
+to clone an object: 
+situation 1:  if no nested objects: 
+method 1: 
+for(let key in obj) {
+		clone[key] = obj[key]; 
+}
+method 2: 
+Object.assign(dest, ...sources); 
+let clone = Object.assign({}, obj); // clones the object and returns it. rewrites the values of the keys in dest according to souces. 
+
+situation 2: nested objects: 
+eg: 
+let obj = {
+	name: "john", 
+	size: {
+		height: 200, 
+		width: 300
+	}
+}; 
+then-> use structuredClone(object) method: creates deep copy of object. 
+let clone = structuredClone(obj); 
+------------------------------------------------------------------
+// CONCEPT OF THIS. VERY IMPORTANT
+- value of 'this' is computed at run time. 
+let user = {
+		name: 'john', 
+		age: 30, 
+		showName = function() {
+				return this.name; 
+		}
+}; 
+alert(user.showName()); // john
+- now if we write return user.name in above fucntion and do, 
+let clone = user; 
+user = null; 
+alert(clone.showName()); // error. no reference to user.name, hence always write this.whatever inside the function. 
+
+- when a fucntion is a member of an object, it is called 'method'. 
+- hence, the value of this computed at runtime depends on the object tied with this. eg: 
+let user = {
+		name: 'john'
+}; 
+let clone = {
+		name: 'lmao'
+}; 
+
+let sayHi = function() {
+	alert(this.name); 
+}; 
+user.sayHi = sayHi; 
+clone.sayHi = sayHi; 
+alert(user.sayHi()); // john
+alert(clone.sayHi()); // lmao 
+
+- shorthand to write member fucntion inside an object: 
+let user = {
+	name: 'john', 
+	age: 40, 
+	showName() {
+		alert(this.name); 
+	}
+}; 
+
+// tasks : 
+function makeUser() {
+  return {
+    name: "John",
+    ref: this
+  };
+}
+let user = makeUser();
+alert( user.ref.name ); // What's the result?: result is error, cannot read property name, undefined. because the value of fucntion makeUser() is undefined unless it is not tied to an object. 
+solution: 
+fucntion makeUser() {
+	return {
+		name: "John", 
+		ref() {
+			return this; 
+		}
+	}; 
+}
+let user = makeUser(); 
+alert(user.ref().name); // John, bcoz user.ref() is now a 'method' and the value of this is set to the object with dot operator. 
+// to take integer input, 3rd way: 
+let a = +prompt("enter the input", [default value optional]); 
+
+// task 2: ladder object allows to go up and down: 
+let ladder = {
+  step: 0,
+  up() {
+    this.step++;
+  },
+  down() {
+    this.step--;
+  },
+  showStep: function() { // shows the current step
+    alert( this.step );
+  }
+};
+// then it's object is called like this: 
+ladder.up();
+ladder.up();
+ladder.down();
+ladder.showStep(); // 1
+ladder.down();
+ladder.showStep(); // 0
+// modify the object such that all calls can be made as: 
+ladder.up().up().down().showStep().down().showStep(); // shows 1 then 0
+// solution: RETURN the OBJECT from each method, hence it will be available to be processed by the next method chained in the query.: 
+up() {
+    this.step++;
+    return this;
+  },
+  down() {
+    this.step--;
+    return this;
+  },
+  showStep() {
+    alert( this.step );
+    return this;
+  }
+------------------------------------------------------------------ 
+// CONSTRUCTOR and new operator: 
+- construcutor allows to create multiple objects easily
+- a fucntion having following characterstics: 
+	- name of construcuter startes with 'capital' letter
+	- ALWAYS  called with the 'new' operator
+	- when it is called, it starts with empty 'this'object(this = {};) and then add to it all the methods and varaibles to it in the body and returns the populated this object to calling varible
+	- usually no return statement is written inside constructor, if written, then 2 case: if returning an object, object will be returned and 'this' object will not be returned. if primitve is being returned, no one cares
+	- inside constructor, ALL the methods and varibles are written with this.whatever. 
+
+function User(name) { // can also be written in form of fucntion expression
+	this.name = name; 
+	this.isAdmin = false; 
+	this.sayHello = function() {
+		alert('my name is' + this.name); 
+	}; 
+}
+let user = new User('john'); 
+john.sayHello(); 
+
+- NOTE: ARROW fucntion CANNOT be used as constructor, because it does not have it's own this. it has access of outside this 
+-------------------------------------------------------------------
+// optional chaining ?.
+
+- special kind of syntax
+- a solution to avoid repeating code like: 
+problem syntax: let user = {}; // user has no address
+alert(user.address ? user.address.street ? user.address.street.name : null : null);
+problem here: user.address appears 3 times
+solution: optional chaining
+alert(user.address?.street?.name); 
+- ?. checks for the existence of the immediate left thing.
+- can only be written for variables alrdy declred
+- can work for existence of methods of objects, eg: 
+let userAdmin = {
+  admin() {
+    alert("I am admin");
+  }
+};
+let userGuest = {};
+userAdmin.admin?.(); // I am admin
+userGuest.admin?.(); // nothing happens (no such method)
+- exitence of admin() is checked, if exists, run it otherwise return undefined
+
+- application with ?.[key]; 
+let key = "firstName";
+let user1 = {
+  firstName: "John"
+};
+let user2 = null;
+alert( user1?.[key] ); // John
+alert( user2?.[key] ); // undefined
+- note: optional chaining can ONLY by used for reading or deleting, NOT writing : 
+delete user?.name; // delete user.name if user exists
+let user = null;
+user?.name = "John"; // Error, doesn't work
+-----------------------------------
+symbol type: 
+
+- represents a unique identifier
+- created using Symbol(); 
+let id = Symbol(); 
+OR with description: 
+let id = Symbol('id'); 
+- used for hidden properties.
+let id = Symbol('id'); 
+- two symbols are never same. 
+let user = {
+	name: "john", 
+	[id]: 123 // symbols are written inside []
+}; 
+alert(user[id]); // 123
+- symbol do not participate in for...in loop
+- but can be cloned using let clone = Object.assign({}, user); 
+- GLOBAL Symbols: declared using Symbol.for(key); 
+// read from the global registry
+let id = Symbol.for("id"); // if the symbol did not exist, it is created
+// read it again (maybe from another part of the code)
+let idAgain = Symbol.for("id");
+// the same symbol
+alert( id === idAgain ); // true
+--------------------------------------------------------------
+
+								4. DATA TYPES
+
+- primitives can't store additional data like properties
+- usage of wrapper objects is done by js itself. do not do it explicitly (HIGHLY UN-RECOMMENDED) eg: 
+let zero = new Number(0); // NOT Recommended
+
+--------------------------------------------------
+						
+						NUMBERS
+
+- parseInt(str, base) parses the string str into an integer in numeral system with given base, 2 ≤ base ≤ 36
+- num.toString(base) converts a number to a string in the numeral system with the given base
+let num = 255; 
+alert(num.toString(2)); // 11111111
+OR 2-dots method (..)
+alert(255..toString(2)); OR 
+alert((255).toString(2)); 
+
+- For regular number tests
+- isNaN(value) converts its argument to a number and then tests it for being NaN
+- Number.isNaN(value) checks whether its argument belongs to the number type, and if so, tests it for being NaN
+let num = "242"; 
+alert(isNaN(num)); // true
+alert(Number.isNaN(num)); // false (num is string)
+- isFinite(value) converts its argument to a number and then tests it for not being NaN/Infinity/-Infinity
+- Number.isFinite(value) checks whether its argument belongs to the number type, and if so, tests it for not being NaN/Infinity/-Infinity
+
+- For converting values like 12pt and 100px to a number:
+- parseInt/parseFloat for the “soft” conversion, which reads a number from a string and then returns the value they could read before the error
+
+alert(parseInt('100px')); // 100
+alert(parseFloat('12.5em')); // 12.5
+alert(parseInt('12.3')); // 12, only the integer part is returned
+alert(parseFloat('12.3.4')); // 12.3, the second point stops the reading
+alert(parseInt('a123')); // NaN
+
+- Math.random(): Returns a random number from 0 to 1 (not including 1).
+- Math.pow(n, power)
+
+- Round using Math.floor, Math.ceil, Math.trunc, Math.round or num.toFixed(precision)
+
+- toFixed(num) returns a string (after rounding). convert it to a number: 
+let num = 12.342; 
+alert(num.toFixed(1)); // 12.3 (string)
+alert(+num.toFixed(1)); // 12.3 (number)
+-------------------------------------------------------
+
+						STRINGS
+
+- no functionality to store a single char. treates as string
+- using backticks is that they allow a string to span multiple lines: 
+let guestList = `Guests:
+ * John
+ * Pete
+ * Mary
+`;
+alert(guestList); // a list of guests, multiple lines
+// outputing in multiple lines like this can ONLY be done using backticks
+OTHERWISE, use \n inside the string if using '' or "", i.e, 
+let guestList = "Guests:\n * John\n * Pete\n * Mary";
+
+- length property ( not a fucntion) : 
+alert( `My\n`.length ); // 3
+
+- accessing character at position 'pos': 
+2 ways: 
+- using str[pos]: 
+- using str.at(pos); 
+NOTE: if pos is NEGATIVE, only .at(pos) can be used
+
+- changing case: 
+alert( 'Interface'.toUpperCase() ); // INTERFACE
+alert( 'Interface'.toLowerCase() ); // interface
+alert( 'Interface'[0].toLowerCase() ); // 'i' // for only 1 char
+
+- searching for a substring: 
+-> str.indexOf(substr [, pos]): -1 if not found
+let str = 'Widget with id';
+alert( str.indexOf("id") ); // 1
+alert( str.indexOf("id", 3) ); // 12
+
+alert( "Widget".includes("id") ); // true
+alert( "Widget".includes("id", 3) ); // false
+alert( "Widget".startsWith("Wid") ); // true, "Widget" starts with "Wid"
+alert( "Widget".endsWith("get") ); // true, "Widget" ends with "get"
+
+- getting a substring: 
+- str.slice(star [, end]); 
+let str = "stringify";
+alert( str.slice(0, 5) ); // 'strin'
+alert( str.slice(2) ); // 'ringify'
+alert( str.slice(-4, -1) ); // 'gif'
+
+- using ASCII
+alert( "Z".codePointAt(0) ); // 90
+alert( String.fromCodePoint(90) ); // Z
+
+str.trim() – removes (“trims”) spaces from the beginning and end of the string
+
+- strings are IM-MUTABLE in js. CAN NOT change any character to other 
+let str = 'john'; 
+str[0] = 'k'; // error
+
+solution: 
+function ucFirst(str) {
+  if (!str) return str; 
+  return str[0].toUpperCase() + str.slice(1);
+}
+alert( ucFirst("john") ); // John
+// TEST for empty string is done becoz if string is empty, str[0] is undefined, .toUpperCase() can NOT be used 
+
+task: Write a function checkSpam(str) that returns true if str contains ‘viagra’ or ‘XXX’
+The function must be case-insensitive:
+checkSpam('buy ViAgRA now') == true
+checkSpam('free xxxxx') == true
+checkSpam("innocent rabbit") == false
+
+solution: To make the search case-insensitive, let’s bring the string to lower case and then search
+function checkSpam(str) {
+  let lowerStr = str.toLowerCase();
+  return lowerStr.includes('viagra') || lowerStr.includes('xxx');
+}
+
+task: to do this: alert( extractCurrencyValue('$120') === 120 ); // true
+=> function extractCurrencyValue(str) {
+  return +str.slice(1);
+}
+------------------------------------------------------------------
+
+						ARRAYS
+
+- special kind of objects with keys as numeric values
+- 2 ways to declrea: 
+let arr = []; 
+let arr = new Array(); // never used
+- arr.length property, (not a fucntion)
+
+let fruits = ["Apple", "Orange", "Plum"];
+alert( fruits ); // Apple,Orange,Plum
+
+- arrays can store non-homogenous data like objects: 
+let arr = [ 'Apple', { name: 'John' }, true, function() { alert('hello'); } ];
+alert( arr[1].name ); // John
+arr[3](); // hello
+
+- to access a character: 2 ways: 
+- using arr[pos]
+- using arr.at(pos): 
+arr.at(pos) = arr[pos] if pos >= 0
+arr.at(pos) starts from backwards if pos < 0, arr.at(-1) = arr[arr.length-1]
+
+- methods : 
+- backwards: push(), pop(): deletes the last element and returns it
+- fordward: shift(): deletes the front element and return it, unshift(): adds the elements to the front. 
+
+arr = ['mango', 'apple']; 
+arr.unshift('babana', 'coffee'); 
+alert(arr); // babana,coffee,mango,apple
+
+- copying arrays works by reference like objects. new varible points to the same memory location. so any change in the new copied array changes the old array also. so use slice() method described below
+
+- for(let i = 0; i < arr.length; i++) {
+	alert(arr[i]); 
+}
+- for(let value of arr) { // for...of loop (mostly used)
+	alert(value); 
+}
+- for(let key in arr) { // never used
+	alert(arr[key]); // key is index in case of arrays
+}
+
+- length is speical in case of arrays. updating the length of the array permanently changes the array: 
+let arr = [1,2,3,4,5]; 
+arr.length = 2; 
+alert(arr); // 1,2 (array changed permanently); 
+
+- to clear all the ellements of the array: arr.length = 0; 
+
+// task: 
+
+let arr = ["a", "b"];
+
+arr.push(function() {
+  alert( this );
+});
+
+what will be the output of: arr[2](); ?
+solution: function() is pushed to the last index of the array, now it has 3 elements with last element as this fucntion. now since the array are basically ordered objects, so 'this' of the function is tied to arr object. so arr[2](); invokes the fucntion and since it is tied to the arr, it prints the entire object
+-------------------------------------------------------
+
+					ARRAY METHODS
+
+CATEGORY 1: TO DELETE, INSERT ELEMENTS: 
+
+- to delete element: Never use delete arr[pos].. creates loopholes
+
+- splice() method: arr.splice(startPos [, deleteCount, elem1, ..., elemN])
+
+let arr = ["I", "study", "JavaScript"];
+arr.splice(1, 1); // from index 1 remove 1 element
+alert( arr ); // ["I", "JavaScript"]
+
+let arr = ["I", "study", "JavaScript", "right", "now"];
+// remove 3 first elements and replace them with another 2 elements
+arr.splice(0, 3, "Let's", "dance");
+alert( arr ) // now ["Let's", "dance", "right", "now"]
+
+- splice method returns the array of removed elements
+let arr = ["I", "study", "JavaScript", "right", "now"];
+let removed = arr.splice(0, 2);
+alert( removed ); // "I", "study" <-- array of removed elements
+
+- to insert elements at an index without deleting any items, deleteCount = 0
+let arr = ['asga', 'asoiuasnsdv', 'oiauvb']; 
+arr.splice(2, 0, 'complex', 'lnag'); 
+alert(arr); // ['asga', 'asoiuasnsdv', 'complex', 'lnag', 'oiauvb']; 
+
+- negative indexes are allowed in splice(); 
+----------------------------------------
+- slice() method: arr.slice([start], [end]): copies the elements from start index till end - 1 and returns it. if both are ommited, returns a newly created array
+
+let arr = ["t", "e", "s", "t"];
+alert( arr.slice(1, 3) ); // e,s (copy from 1 to 3)
+alert( arr.slice(-2) ); // s,t (copy from -2 till the end)
+let clone = arr.slice(); 
+clone[1] = 'j'; 
+alert(clone); // ['t', 'j', 's', 't']; 
+alert(arr); // same as original arr
+----------------------------------------
+- concat() method: arr.concat(elem1, elem2, ..., elemN); 
+creates new array(modifies the original) to include the existing elements and values of other arrays and additional elements. 
+
+let arr = [1, 2];
+alert( arr.concat([3, 4]) ); // 1,2,3,4
+alert( arr.concat([3, 4], [5, 6]) ); // 1,2,3,4,5,6
+alert( arr.concat([3, 4], 5, 6) ); // 1,2,3,4,5,6
+--------------------------------------------------------
+
+CATEGORY 2: TO ITERATE 
+
+- forEach() method: runs a 'function' for every item, NOTHING is RETURNED
+arr.forEach(function(item, index, array) {
+  // ... do something with item
+});
+
+["Bilbo", "Gandalf", "Nazgul"].forEach((item, index, array) => {
+  alert(`${item} is at index ${index} in ${array}`);
+});
+- for and for...of are also used
+-----------------------------------------
+
+CATEGORY 3: SEARCHING IN ARRAY: 
+
+- indexOf()/lastIndexOf() and includes(): to find the presence of "primitives"
+
+- arr.indexOf(item, from) – looks for item starting from index from, and returns the first index where it was found, otherwise -1
+- arr.includes(item, from) – looks for item starting from index from, returns true if found.
+- arr.lastIndexOf(item)
+- from is optional ,then search will be from 0 index
+
+let arr = [1, 0, false, 1];
+alert( arr.indexOf(0) ); // 1
+alert( arr.indexOf(false) ); // 2
+alert( arr.indexOf(null) ); // -1
+alert( arr.includes(1) ); // true
+alert( arr.lastIndexOf(1) ); // 3
+
+- presence of element NaN can be checked using .includes()
+--------------------------------------------
+
+- find() and findIndex()/findLastIndex()
+-to check the presence of "1 single object" under specific condtion
+-find returns the item(object), findIndex returns index/-1
+
+let result = arr.find(function(item, index, array) {
+  // if true is returned, item is returned and iteration is stopped
+  // for falsy scenario returns undefined
+});
+
+let users = [
+  {id: 1, name: "John"},
+  {id: 2, name: "Pete"},
+  {id: 3, name: "Mary"},
+  {id: 4, name: "John"},
+];
+let user = users.find(item => item.id == 1);
+alert(user.name); // John
+alert(users.findIndex(user => user.name == 'John')); // 0
+alert(users.findLastIndex(user => user.name == 'John')); // 3
+-------------------------------------------
+- filter() : similar to find, but returns 'ALL' matching objects in form of array
+
+let results = arr.filter(function(item, index, array) {
+  // if true item is pushed to results and the iteration continues
+  // returns empty array if nothing found
+});
+
+let users = [
+  {id: 1, name: "John"},
+  {id: 2, name: "Pete"},
+  {id: 3, name: "Mary"}
+];
+let someUsers = users.filter(item => item.id < 3);
+alert(someUsers.length); // 2
+-----------------------------------------------------------
+
+CATEGORY 4: TRANSFORM ARRAY
+
+- map(): calls the function for each element of the array and returns the array of results
+
+let result = arr.map(function(item, index, array) {
+  // returns the new value instead of item
+});
+
+let lengths = ["Bilbo", "Gandalf", "Nazgul"].map(item => item.length);
+alert(lengths); // 5,7,6
+------------------------------
+- sort(): sorts the ary in place and nothring is returned
+let arr = [5,2,5,1,1,4,18,729,71,3571,9,10]; 
+arr.sort((a,b)=> a - b); // sorts in ascenind order
+--------------------------------
+- reverse(): reverses the array: arr.reverse(); 
+-----------------------------------------
+
+- split() and join()
+- str.split(delim [, maxsize of result array, discard later ones])
+- split() returns the array
+
+let names = 'Bilbo, Gandalf, Nazgul';
+let arr = names.split(', ');
+for (let name of arr) {
+  alert( `A message to ${name}.` ); // A message to Bilbo  (and other names)
+}
+
+- split into letters: 
+let str = 'test'; 
+let arr = str.split(''); // empty
+['t','e','s','t']; 
+
+- arr.join(glue) : converts arry to string with glue in btween elemetns
+let arr = ['Bilbo', 'Gandalf', 'Nazgul'];
+let str = arr.join(';'); // glue the array into a string using ;
+alert( str ); // Bilbo;Gandalf;Nazgul
+-----------------------
+- reduce() , reduceRight(): compute a single value based on the items of the array
+let value = arr.reduce(function(accumulator, item, index, array) {
+  // ...
+}, [initial]);
+
+- always write the initial
+let arr = [1, 2, 3, 4, 5];
+let result = arr.reduce((sum, current) => sum + current, 0);
+alert(result); // 15
+----------------------------------------
+sort(), reverse(), and splice() modifies the array itself
+- array.fill(value [,start] [, end]): fills the value in [start, end)
+----------------------------------------------------
+tasks on array methods: 
+1. camelize(str): input: 'background-color', output: 'backgroundColor'; 
+-> use split('-') and then join('')=> 
+function camelize(str) {
+  return str
+    .split('-') // splits 'my-long-word' into array ['my', 'long', 'word']
+    .map(
+      // capitalizes first letters of all array items except the first one
+      // converts ['my', 'long', 'word'] into ['my', 'Long', 'Word']
+      (word, index) => index == 0 ? word : word[0].toUpperCase() + word.slice(1)
+    )
+    .join(''); // joins ['my', 'Long', 'Word'] into 'myLongWord'
+}
+
+2. filter the values in range (low, high) 
+function filterRange(arr, a, b) {
+  return arr.filter(item => (a <= item && item <= b));
+}
+
+3. filter in-place: use splice method to delete elements outside range: 
+function filterRangeInPlace(arr, a, b) {
+	for(let i = 0; i < arr.length; i++) {
+		if(arr[i] < a || arr[i] > b) {
+			arr.splice(i, 1); 
+			i--; 
+		}
+	}
+}
+
+4. array of objects. convert it names (map to produce array of primittives) 
+
+let john = { name: "John", age: 25 };
+let pete = { name: "Pete", age: 30 };
+let mary = { name: "Mary", age: 28 };
+
+let users = [ john, pete, mary ];
+
+let names = /* ... your code */
+alert( names ); // John, Pete, Mary
+
+solution: 
+let names = users.map(user => user.name); 
+
+5. generate fullnames from name and surname : (map to produce array of objects)
+let john = { name: "John", surname: "Smith", id: 1 };
+let pete = { name: "Pete", surname: "Hunt", id: 2 };
+let mary = { name: "Mary", surname: "Key", id: 3 };
+let users = [ john, pete, mary ];
+let usersMapped = /* ... your code ... */
+/*
+usersMapped = [
+  { fullName: "John Smith", id: 1 },
+  { fullName: "Pete Hunt", id: 2 },
+  { fullName: "Mary Key", id: 3 }
+]
+*/
+alert( usersMapped[0].id ) // 1
+alert( usersMapped[0].fullName ) // John Smith
+
+solution: 
+let usersMapped = users.map(user => 
+	( // note this additional bracket in this problem
+		{
+			fullName: `${user.name} ${user.surname}`; 
+			id: user.id; 
+		}
+	)
+); 
+
+6. get average age using reduce(): 
+let john = { name: "John", age: 25 };
+let pete = { name: "Pete", age: 30 };
+let mary = { name: "Mary", age: 29 };
+let arr = [ john, pete, mary ];
+alert( getAverageAge(arr) ); // (25 + 30 + 29) / 3 = 28
+
+solution: 
+function getAverageAge(arr) {
+	return arr.reduce((prev, curr) => prev + curr.age, 0) / arr.length; 
+}
+
+7. write unique(arr) that should return an array with unique items of arr
+function unique(arr) {
+  /* your code */
+}
+let strings = ["Hare", "Krishna", "Hare", "Krishna",
+  "Krishna", "Krishna", "Hare", "Hare", ":-O"
+];
+alert( unique(strings) ); // Hare, Krishna, :-O
+
+solution: 
+function unique(arr) {
+	let result = []; 
+	for(let value of arr) {
+		if(!result.includes(value)) {
+			arr.push(value); 
+		}
+	}
+	return result; 
+}
+
+8. create a function groupById(arr) that creates an object from it, with id as the key, and array items as values
+
+let users = [
+  {id: 'john', name: "John Smith", age: 20},
+  {id: 'ann', name: "Ann Smith", age: 24},
+  {id: 'pete', name: "Pete Peterson", age: 31},
+];
+let usersById = groupById(users);
+
+/*
+// after the call we should have:
+usersById = {
+  john: {id: 'john', name: "John Smith", age: 20},
+  ann: {id: 'ann', name: "Ann Smith", age: 24},
+  pete: {id: 'pete', name: "Pete Peterson", age: 31},
+}
+*/
+sol: 
+function groupById(users) {
+	return users.map(user => ({
+		`${user.id}`: user
+	})); 
+}
+OR using reduce() method: 
+function groupById(array) {
+  return array.reduce((obj, value) => {
+    obj[value.id] = value;
+    return obj;
+  }, {})
+}
